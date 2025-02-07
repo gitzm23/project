@@ -3,77 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student SignUp</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: black;
-            color: white;
-            padding: 20px;
-        }
-        .container {
-            width: 60%;
-            margin: auto;
-            background-color: #222;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-        }
-        h2 {
-            text-align: center;
-            color: #e6e600;
-        }
-        label {
-            font-size: 14px;
-            color: white;
-            margin-top: 10px;
-            display: block;
-        }
-        input[type="text"], input[type="email"], input[type="password"], input[type="datetime-local"], input[type="file"], input[type="url"], input[type="number"], input[type="date"], select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #333;
-            color: white;
-        }
-        .checkbox-container {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .checkbox-container input {
-            width: auto;
-            margin-right: 10px;
-        }
-        button {
-            background-color: #e6e600;
-            color: black;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #e6e600;
-        }
-    </style>
+    <title>Student Onboarding</title>
+    <link rel="stylesheet" href="student_onboarding.css">
 </head>
 <body>
-
     <div class="container">
-        <h2>STUDENT SIGNUP</h2>
-        <form action="/submit-signup" method="POST">
+        <h2>Student Onboarding</h2>
+        <form action="/submit-student-onboarding" method="POST">
             
+            <label for="first-name">First Name</label>
+            <input type="text" id="first-name" placeholder="Enter your first name" required>
+  
+            <label for="last-name">Last Name</label>
+            <input type="text" id="last-name" placeholder="Enter your last name" required>
+
             <label for="dob">Date of Birth</label>
             <input type="date" id="dob" name="dob" required>
+            
+            <label for="contact">Contact Number</label>
+            <div style="display: flex; align-items: center;">
+                <select id="countryCode" required style="width: 100px; margin-right: 15px;">
+                    <option value="" disabled selected>PIN</option>
+                    <option value="+1">+1 (USA)</option>
+                    <option value="+44">+44 (UK)</option>
+                    <option value="+91">+91 (India)</option>
+                    <option value="+61">+61 (Australia)</option>
+                </select>
+                <input 
+                    type="tel" 
+                    id="phoneNumber" 
+                    name="phoneNumber" 
+                    placeholder="Your Contact Number" 
+                    required 
+                    style="flex: 1;" 
+                    pattern="\d{10}" 
+                    maxlength="10" 
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            </div>
 
             <label for="gender">Gender</label>
             <select id="gender" name="gender" required>
-                <option value="" disabled selected>Select gender</option>
+                <option value="" disabled selected>Select your gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
@@ -81,15 +51,6 @@
 
             <label for="profilePicture">Profile Picture (Optional)</label>
             <input type="file" id="profilePicture" name="profilePicture">
-
-            <label for="institutionType">Institution Type</label>
-            <select id="institutionType" name="institutionType" required>
-                <option value="" disabled selected>Select the type</option>
-                <option value="University">University</option>
-                <option value="College">College</option>
-                <option value="Vocational Institute">Vocational Institute</option>
-                <option value="Other">Other</option>
-            </select>
 
             <label for="institutionName">Institution Name</label>
             <input type="text" id="institutionName" name="institutionName" required>
@@ -104,9 +65,28 @@
             </select>
 
             <label for="GPA">GPA/CGPA</label>
-            <input type="number" id="GPA" name="GPA" step="0.01" required>
+            <input type="number" id="GPA" name="GPA" step="0.01" placeholder="Enter your GPA/CGPA" required min="0" max="10" oninput="validateGPA(this)" onkeydown="blockInvalidKeys(event)">
+            
+            <script>
+                function validateGPA(input) {
+                    let value = input.value;
+            
+                    // Prevent entering invalid values like 11 or greater
+                    if (value === "" || parseFloat(value) < 0 || parseFloat(value) > 10) {
+                        input.value = value.slice(0, -1); // Remove the last entered digit
+                    }
+                }
+            
+                function blockInvalidKeys(event) {
+                    const invalidKeys = ["e", "E", "+", "-"]; // Prevent scientific notation and negative numbers
+                    if (invalidKeys.includes(event.key)) {
+                        event.preventDefault();
+                    }
+                }
+            </script>
+            
 
-            <label for="year">Select Year</label>
+            <label for="year">Year of Study</label>
             <select id="year" name="year" required>
                 <option value="" disabled selected>Select your year</option>
                 <option value="1st Year">1st Year</option>
@@ -116,20 +96,12 @@
             </select>
 
             <label for="linkedin">LinkedIn URL</label>
-            <input type="url" id="linkedin" name="linkedin">
+            <input type="url" id="linkedin" name="linkedin" placeholder="https://www.linkedin.com/in/your-profile">
 
             <label for="github">GitHub URL</label>
-            <input type="url" id="github" name="github">
+            <input type="url" id="github" name="github" placeholder="https://github.com/your-username">
 
-            <label for="preferredContactMethod">Preferred Communication Method</label>
-            <select id="preferredContactMethod" name="preferredContactMethod" required>
-                <option value="" disabled selected>Select method</option>
-                <option value="Email">Email</option>
-                <option value="Phone">Phone</option>
-                <option value="In-App Messaging">In-App Messaging</option>
-            </select>
-
-            <label for="skills">Skills and Certifications</label>
+            <label for="skills">Resume Upload</label>
             <input type="file" id="skills" name="skills">
 
             <label for="placementSchedule">Schedule Placement Date & Time</label>
@@ -137,11 +109,11 @@
 
             <div class="checkbox-container">
                 <input type="checkbox" id="termsAndConditions" name="termsAndConditions" required>
-                <label for="termsAndConditions">I agree to the <a href="#" style="color:yellow;">Terms and Conditions</a></label>
+                <label for="termsAndConditions">I agree to the <a href="#">Terms and Conditions</a></label>
             </div>
             <div class="checkbox-container">
                 <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
-                <label for="privacyPolicy">I agree to the <a href="#" style="color:yellow;">Privacy Policy</a></label>
+                <label for="privacyPolicy">I agree to the <a href="#">Privacy Policy</a></label>
             </div>
 
             <div class="checkbox-container">
@@ -152,6 +124,5 @@
             <button type="submit">Sign Up</button>
         </form>
     </div>
-
 </body>
 </html>
